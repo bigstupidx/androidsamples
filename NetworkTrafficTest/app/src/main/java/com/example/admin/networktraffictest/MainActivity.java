@@ -131,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
             lastRate = new Rate();
             curRate = new Rate();
-            curRate.setRx(TrafficStats.getTotalRxPackets());
-            curRate.setTx(TrafficStats.getTotalTxPackets());
+            curRate.setRx(TrafficStats.getTotalRxBytes());
+            curRate.setTx(TrafficStats.getTotalTxBytes());
             curRate.setTimestamp(System.nanoTime());
             curRate.copyTo(lastRate);
         }
@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             if (isNetworkEnabled()) {
-                curRate.setRx(TrafficStats.getTotalRxPackets());
-                curRate.setTx(TrafficStats.getTotalTxPackets());
+                curRate.setRx(TrafficStats.getTotalRxBytes());
+                curRate.setTx(TrafficStats.getTotalTxBytes());
                 curRate.setTimestamp(System.nanoTime());
                 Log.d(TAG, "curRx: " + curRate.getRx() +
                             ", curTx: " + curRate.getTx() +

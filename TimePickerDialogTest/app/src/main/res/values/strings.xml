@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TimePickerDialogTest</string>
+    <string name="show_timepicker_default">Show TimePicker(Default)</string>
+    <string name="show_timepicker_custom">Show TimePicker(Custom)</string>
+</resources>

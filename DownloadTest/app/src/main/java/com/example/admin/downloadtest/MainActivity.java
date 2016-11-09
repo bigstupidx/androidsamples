@@ -2,6 +2,7 @@ package com.example.admin.downloadtest;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,7 +20,6 @@ import android.widget.Toast;
  * http://blog.vogella.com/2011/06/14/android-downloadmanager-example/
  * http://blog.csdn.net/ygd1994/article/details/51313563
  * https://developer.android.com/reference/android/app/DownloadManager.html
- *
  */
 public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "get response...");
             String action = intent.getAction();
+            Log.d(TAG, "get response..." + action);
             if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
                 long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                 DownloadManager.Query query = new DownloadManager.Query();
@@ -39,8 +39,13 @@ public class MainActivity extends AppCompatActivity {
                 if (c.moveToFirst()) {
                     int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                     if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
-                        String urlString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                        Toast.makeText(MainActivity.this, "urlString: " + urlString, Toast.LENGTH_LONG).show();
+                        String uriString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+
+                        Toast.makeText(getApplicationContext(),
+                                "uriString: " + uriString, Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "uriString: " + uriString);
+                        ContentResolver resolver;
+
                     }
                 }
             }
@@ -52,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         enqueue = new long[100];
-        for (int i=0; i<enqueue.length; i++) {
+        for (int i = 0; i < enqueue.length; i++) {
             enqueue[i] = -1;
         }
 
         registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        Button btn1 = (Button)findViewById(R.id.btn1);
+        Button btn1 = (Button) findViewById(R.id.btn1);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btn2 = (Button)findViewById(R.id.btn2);
+        Button btn2 = (Button) findViewById(R.id.btn2);
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick...");
-                dm = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                Log.d(TAG, "onClick[system download manager]...");
+                dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://www.vogella.de/img/lars/LarsVogelArticle7.png"));
                 enqueue[0] = dm.enqueue(request);
             }
